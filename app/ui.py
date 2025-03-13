@@ -18,8 +18,7 @@ class IDUNTUI(App):
 
     def on_mount(self):
         """Start on login screen."""
-        self.context.connect_ssh()
-        self.push_screen(HomeScreen())
+        self.push_screen(LoginScreen())
 
     def action_switch_to_home(self):
         """Navigate to the home screen."""

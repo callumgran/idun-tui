@@ -139,50 +139,6 @@ class AppContext:
         except Exception as e:
             return f"Error establishing tunnel: {e}"
 
-    # def setup_tunnel(self, node, local_port):
-    #     """Create an SSH tunnel to a node and store the process."""
-    #     if node in self.local_tunnels:
-    #         return f"Tunnel to {node} already exists."
-
-    #     command = f"sshpass -p '{self.password}' ssh -L {local_port}:{node}:22 {self.username}@idun-login2.hpc.ntnu.no -N -T"
-    #     try:
-    #         process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-
-    #         time.sleep(3)
-    #         if not self.is_port_open(local_port):
-    #             self.error_message = f"Failed to establish tunnel to {node} on port {local_port}."
-    #             process.terminate()
-    #             return
-
-    #         self.local_tunnels[node] = (local_port, process)
-    #         return f"Tunnel established to {node} on localhost:{local_port}."
-
-    #     except Exception as e:
-    #         return f"Error establishing tunnel: {e}"
-        
-    # def is_port_open(self, local_port):
-    #     """Check if a local port is open (used to verify SSH tunnel success)."""
-    #     result = subprocess.run(f"netstat -tnl | grep :{local_port}", shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    #     return result.returncode == 0
-        
-    
-    # def close_tunnel(self, node):
-    #     """Close a specific SSH tunnel."""
-    #     if node in self.local_tunnels:
-    #         (_, process) = self.local_tunnels[node]
-
-    #         pid = process.pid
-    #         process.terminate()
-
-    #         time.sleep(2)
-    #         if psutil.pid_exists(pid):
-    #             os.system(f"kill -9 {pid}")
-
-    #         del self.local_tunnels[node]
-    #         return f"Tunnel to {node} closed."
-        
-    #     self.error_message = f"No active tunnel to {node}."
-
     def close_tunnel(self, node):
         """Properly close an SSH tunnel."""
         if node in self.local_tunnels:
@@ -191,9 +147,10 @@ class AppContext:
             # Close the local socket
             local_socket.close()
 
-            # Stop the thread
-            tunnel_thread.join(timeout=1)
+            if tunnel_thread.is_alive():
+                tunnel_thread.join(timeout=1)
 
+            # Stop the thread
             del self.local_tunnels[node]
             return f"Tunnel to {node} closed."
 

@@ -1,6 +1,13 @@
 from textual.binding import Binding
 
-SSH_BASE_HOST = "idun-login2.hpc.ntnu.no"
+SSH_BASE_HOST = "idun-login1.hpc.ntnu.no"
+
+SUCCESS_COLOR = "#22af4b"
+ERROR_COLOR = "#ee2524"
+WARNING_COLOR = "#fee851"
+INFO_COLOR = "#0f89ca"
+
+PORT_COLOR = "#f05123"
 
 class UIBindings():
 	def __init__(self):

@@ -1,7 +1,8 @@
 from textual.app import App, ComposeResult
 from textual.widgets import Footer, Header, Label, Button, Static
 from textual.screen import Screen
-from app.context import AppContext
+from app.tunnel_manager import TunnelManager
+from app.ssh_connection import SSHConnectionManager
 from app.screens.home_screen import HomeScreen
 from app.screens.login_screen import LoginScreen
 from app.screens.request_node_screen import NodeRequestScreen
@@ -14,7 +15,8 @@ class IDUNTUI(App):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.context = AppContext()
+        self.context = SSHConnectionManager()
+        self.tunnel_manager = TunnelManager(self.context)
 
     def on_mount(self):
         """Start on login screen."""
@@ -27,16 +29,10 @@ class IDUNTUI(App):
 
     def action_logout(self):
         """Logout user and return to login screen."""
-        self.context.close_ssh()
+        self.context.close()
         self.context.password = None
         self.pop_screen()
         self.push_screen(LoginScreen())
-
-    def action_toggle_dark(self) -> None:
-        """An action to toggle dark mode."""
-        self.theme = (
-            "textual-dark" if self.theme == "textual-light" else "textual-light"
-        )
     
     def action_switch_to_node_request(self):
         """Navigate to the node request screen."""
@@ -45,7 +41,8 @@ class IDUNTUI(App):
 
     def action_quit(self):
         """Quit the app."""
-        self.context.close_ssh()
+        self.tunnel_manager.close_all_tunnels()
+        self.context.close()
         self.exit()
 
 

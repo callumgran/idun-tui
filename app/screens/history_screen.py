@@ -1,7 +1,6 @@
 from app.screens.base_screen import BaseScreen
-from textual import on
 from textual.containers import Container
-from textual.widgets import Static, Input, DataTable
+from textual.widgets import Static, DataTable
 from textual.binding import Binding
 from rich.text import Text
 import re
@@ -14,8 +13,6 @@ class HistoryScreen(BaseScreen):
         Binding("r", "refresh_history", "Refresh History",
                 tooltip="Refetches your history list", priority=False),
     ]
-
-    # 
 
     def __init__(self):
         super().__init__()
@@ -34,22 +31,8 @@ class HistoryScreen(BaseScreen):
             id="home-container"
         )
 
-    # @on(DataTable.RowSelected)
-    # def on_row_clicked(self, event: DataTable.RowSelected) -> None:
-    #     table = event.data_table
-    #     row = table.get_row(event.row_key)
-    #     self.selected_row_key = event.row_key
-    #     self.selected_job_id = row[0]
-    #     if (str(row[7]).startswith("idun")):
-    #         self.selected_node = str(row[7])
-    #     else:
-    #         self.selected_node = None
-    #     self.update_status(
-    #         f"Selected job: {self.selected_job_id} on node {self.selected_node if self.selected_node is not None else 'not allocated'}", color="#0f89ca")
-
     def compose(self):
         yield from super().compose(self.content)
-        # yield self.port_input
 
     def on_mount(self):
         """Fetch initial job queue output on mount."""
@@ -63,7 +46,6 @@ class HistoryScreen(BaseScreen):
         """Fetch and update the job queue output."""
         self.job_table.clear()
         self.app.call_later(self.refresh)
-        # sacct -u username --starttime=2024-05-01 --format=JobID,JobName%50,State,Start,End,Elapsed,NodeList
 
         result = self.app.context.run_command(f"sacct -u {self.username} --format=JobID,JobName%50,State,Start,End,Elapsed,NodeList")
         parsed_jobs = self.parse_sacct_output(result)[1:]

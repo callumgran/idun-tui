@@ -1,8 +1,7 @@
-from textual.app import App, ComposeResult
-from textual.widgets import Footer, Header, Label, Button, Static
-from textual.screen import Screen
+from textual.app import App
 from app.tunnel_manager import TunnelManager
 from app.ssh_connection import SSHConnectionManager
+from app.screens.history_screen import HistoryScreen
 from app.screens.home_screen import HomeScreen
 from app.screens.login_screen import LoginScreen
 from app.screens.request_node_screen import NodeRequestScreen
@@ -26,6 +25,11 @@ class IDUNTUI(App):
         """Navigate to the home screen."""
         self.pop_screen()
         self.push_screen(HomeScreen())
+
+    def action_switch_to_history(self):
+        """Navigate to the history screen."""
+        self.pop_screen()
+        self.push_screen(HistoryScreen())
 
     def action_logout(self):
         """Logout user and return to login screen."""

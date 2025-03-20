@@ -39,10 +39,10 @@ class RunSlurmJobScreen(BaseScreen):
 			placeholder="Job name", id="job-name"
 		)
 
-		remote_home = self.app.context.mount_remote_home()
+		self.remote_home = self.app.context.mount_remote_home()
 
 		self.remote_directory_tree = FilteredDirectoryTree(
-			remote_home, id="remote-directory-tree"
+			self.remote_home, id="remote-directory-tree"
 		)
 
 		self.run_button = Button("Run Job", id="submit")
@@ -108,7 +108,7 @@ class RunSlurmJobScreen(BaseScreen):
 		job_name_val = self.job_name.value.strip()
 
 		# Get script file from remote directory selection
-		script_file = self.selected_file_path # TODO: Only get the relative path after the remote home directory
+		script_file = self.selected_file_path.relative_to(self.remote_home)
 
 		# Validate input fields
 		if not config_file or not time_val or not memory_val or not output_file_val or not job_name_val or not script_file:

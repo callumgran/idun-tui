@@ -5,11 +5,12 @@ from app.screens.history_screen import HistoryScreen
 from app.screens.home_screen import HomeScreen
 from app.screens.login_screen import LoginScreen
 from app.screens.request_node_screen import NodeRequestScreen
+from app.screens.create_config_screen import CreateSlurmConfigScreen
 from app.config import UIBindings
 
 class IDUNTUI(App):
 
-    CSS_PATH = "app.css"
+    CSS_PATH = "app.tcss"
     BINDINGS = UIBindings().get_bindings()
 
     def __init__(self, **kwargs):
@@ -19,7 +20,11 @@ class IDUNTUI(App):
 
     def on_mount(self):
         """Start on login screen."""
-        self.push_screen(LoginScreen())
+        if (self.context.username and self.context.password):
+            self.context.connect()
+            self.push_screen(HomeScreen())
+        else:
+            self.push_screen(LoginScreen())
 
     def action_switch_to_home(self):
         """Navigate to the home screen."""
@@ -30,6 +35,11 @@ class IDUNTUI(App):
         """Navigate to the history screen."""
         self.pop_screen()
         self.push_screen(HistoryScreen())
+
+    def action_switch_to_slurm_config(self):
+        """Navigate to the SLURM configuration screen."""
+        self.pop_screen()
+        self.push_screen(CreateSlurmConfigScreen())
 
     def action_logout(self):
         """Logout user and return to login screen."""

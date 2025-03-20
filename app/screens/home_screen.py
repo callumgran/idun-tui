@@ -4,7 +4,7 @@ from textual.containers import Container
 from textual.widgets import Static, Input, DataTable
 from textual.binding import Binding
 from rich.text import Text
-from app.utils.job_parser import parse_squeue_output
+from app.utils.parser import parse_squeue_output
 from app.config import INFO_COLOR, WARNING_COLOR, PORT_COLOR, SUCCESS_COLOR, ERROR_COLOR
 
 class HomeScreen(BaseScreen):
@@ -88,10 +88,14 @@ class HomeScreen(BaseScreen):
 
     def fetch_queue(self):
         self.job_table.clear()
-        self.app.call_later(self.refresh)
-        result = self.app.context.run_command(f"squeue -u {self.username}")
-        parsed_jobs = parse_squeue_output(result)
-        if parsed_jobs:
+        try:
+            result = self.app.context.run_command(f"squeue -u {self.username}")
+        except Exception as e:
+            self.update_status(str(e), color=ERROR_COLOR)
+            self.refresh()
+            return
+        parsed_jobs = parse_squeue_output(result, self.username)
+        if parsed_jobs and len(parsed_jobs) > 0:
             for job in parsed_jobs:
                 row_style = INFO_COLOR if "CPUQ" in job["PARTITION"] else SUCCESS_COLOR if "GPUQ" in job["PARTITION"] else "white"
                 styled_row = [Text(str(job[col]), style=f"bold {row_style}", justify="right") for col in job.keys()]
@@ -104,6 +108,7 @@ class HomeScreen(BaseScreen):
             self.update_status("Job queue updated.", color=SUCCESS_COLOR)
         else:
             self.update_status("No jobs found.", color=WARNING_COLOR)
+        self.refresh()
 
     def cancel_job(self, job_id):
         self.update_status(f"Canceling job {job_id}...", color=INFO_COLOR)

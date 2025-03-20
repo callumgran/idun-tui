@@ -1,6 +1,7 @@
 from app.screens.base_screen import BaseScreen
 from textual.widgets import Input, Button
 from textual.containers import Container, Vertical
+from app.config import ERROR_COLOR, SUCCESS_COLOR
 
 class LoginScreen(BaseScreen):
     def __init__(self):
@@ -29,6 +30,6 @@ class LoginScreen(BaseScreen):
         try:
             self.app.context.connect()
             self.app.action_switch_to_home()
-            self.update_status("Logged in successfully.", color="#22af4b")
+            self.update_status("Logged in successfully.", color=SUCCESS_COLOR)
         except Exception as e:
-            self.update_status(str(e), color="#ee2524")
+            self.update_status(str(e), color=ERROR_COLOR)

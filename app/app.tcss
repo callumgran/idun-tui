@@ -1,4 +1,4 @@
-Container#node-request-container {
+Container#slurm-config-container {
     layout: vertical;
     width: 100vw;
     align: center middle;
@@ -8,10 +8,34 @@ Container#node-request-container {
     overflow-y: scroll;
 }
 
+Container#node-request-container {
+    layout: vertical;
+    width: 100vw;
+    height: 100vh;
+    align: center middle;
+    padding-top: 2;
+    border: solid white;
+    background: #202020;
+    overflow-y: scroll;
+}
+
+Container#slurm-config-container Horizontal {
+    layout: horizontal;
+    width: 80vw;
+    align: center top;
+}
+
 Container#node-request-container Horizontal {
     layout: horizontal;
     width: 80vw;
     align: center top;
+}
+
+Container#slurm-config-container Label {
+    width: 10vw;
+    text-align: right;
+	padding-right: 1;
+    margin-top: 1;
 }
 
 Container#node-request-container Label {
@@ -21,7 +45,24 @@ Container#node-request-container Label {
     margin-top: 1;
 }
 
+Container#slurm-config-container Input, Select {
+    width: 50vw;
+    background: black;
+    margin: 0;
+}
+
 Container#node-request-container Input, Select {
+    width: 50vw;
+    background: black;
+    margin: 0;
+}
+
+Container#slurm-config-container CheckBox {
+    background: black;
+    margin: 0;
+}
+
+Container#slurm-config-container SelectionList {
     width: 50vw;
     background: black;
     margin: 0;
@@ -29,6 +70,7 @@ Container#node-request-container Input, Select {
 
 Button#submit {
     width: auto;
+    text-align: center;
     align: center middle;
     border: solid white;
 }

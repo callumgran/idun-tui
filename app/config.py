@@ -20,6 +20,7 @@ class UIBindings():
 		self.home = Binding("h", "switch_to_home", "Home", tooltip="Go to the home screen", priority=False)
 		self.history = Binding("ctrl+y", "switch_to_history", "History",tooltip="Go to the history screen", priority=False)
 		self.slurm_config = Binding("s", "switch_to_slurm_config", "Slurm Config", tooltip="Go to the SLURM configuration creation screen", priority=False)
+		self.run_slurm = Binding("j", "switch_to_run_slurm", "Run Slurm", tooltip="Go to the SLURM job submission screen", priority=False)
 		self.request_node = Binding("n", "switch_to_node_request", "Request Node", tooltip="Go to the node request screen", priority=False)
 		self.logout = Binding("ctrl+l", "logout", "Logout", tooltip="Logout and return to login screen", priority=False)
 		self.bindings = [
@@ -27,6 +28,7 @@ class UIBindings():
 			self.home,
 			self.history,
 			self.slurm_config,
+			self.run_slurm,
 			self.request_node,
 			self.logout
 		]

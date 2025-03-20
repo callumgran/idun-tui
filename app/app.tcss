@@ -1,3 +1,13 @@
+Container#slurm-run-container {
+    layout: vertical;
+    width: 100vw;
+    align: center middle;
+    padding-top: 2;
+    border: solid white;
+    background: #202020;
+    overflow-y: scroll;
+}
+
 Container#slurm-config-container {
     layout: vertical;
     width: 100vw;
@@ -19,6 +29,12 @@ Container#node-request-container {
     overflow-y: scroll;
 }
 
+Container#slurm-run-container Horizontal {
+    layout: horizontal;
+    width: 80vw;
+    align: center top;
+}
+
 Container#slurm-config-container Horizontal {
     layout: horizontal;
     width: 80vw;
@@ -29,6 +45,13 @@ Container#node-request-container Horizontal {
     layout: horizontal;
     width: 80vw;
     align: center top;
+}
+
+Container#slurm-run-container Label {
+    width: 10vw;
+    text-align: right;
+	padding-right: 1;
+    margin-top: 1;
 }
 
 Container#slurm-config-container Label {
@@ -45,14 +68,30 @@ Container#node-request-container Label {
     margin-top: 1;
 }
 
+Container#slurm-run-container Input, Select {
+    width: 50vw;
+    background: black;
+    margin: 0;
+    overflow-y: scroll;
+}
+
 Container#slurm-config-container Input, Select {
     width: 50vw;
     background: black;
     margin: 0;
+    overflow-y: scroll;
 }
 
 Container#node-request-container Input, Select {
     width: 50vw;
+    background: black;
+    margin: 0;
+    overflow-y: scroll;
+}
+
+Container#slurm-run-container DirectoryTree {
+    height: 100%;
+    width: 70vw;
     background: black;
     margin: 0;
 }

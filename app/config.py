@@ -16,6 +16,7 @@ GPU_TYPES = [("Any", "any"), ("P100", "p100"), ("V100", "v100"),
              ("A100", "a100"), ("H100", "h100")]
 
 SLURM_CONFIG_BASE_PATH = "./slurm_configs"
+SLURM_OUTPUT_BASE_PATH = "./slurm_output"
 
 class UIBindings():
 	def __init__(self):

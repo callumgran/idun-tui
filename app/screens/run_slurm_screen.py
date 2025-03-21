@@ -3,7 +3,7 @@ from textual.containers import Container, Horizontal
 from textual.widgets import Label, Input, Button, Select, DirectoryTree
 from app.screens.base_screen import BaseScreen
 from textual import on
-from app.config import SUCCESS_COLOR, ERROR_COLOR, SLURM_CONFIG_BASE_PATH
+from app.config import SUCCESS_COLOR, ERROR_COLOR, SLURM_CONFIG_BASE_PATH, SLURM_OUTPUT_BASE_PATH
 
 class FilteredDirectoryTree(DirectoryTree):
 	"""Custom DirectoryTree that filters out dotfiles and dot-directories."""
@@ -118,7 +118,7 @@ class RunSlurmJobScreen(BaseScreen):
 		remote_script_path = f"{SLURM_CONFIG_BASE_PATH}/{self.config_type.value}/{config_file}"
 		email = os.getenv("IDUN_EMAIL", "")
 
-		command = f"./{remote_script_path} {script_file} {output_file_val} {time_val} {memory_val} {job_name_val} {email}"
+		command = f"mkdir -p {SLURM_OUTPUT_BASE_PATH} && ./{remote_script_path} {script_file} {SLURM_OUTPUT_BASE_PATH}/{output_file_val} {time_val} {memory_val} {job_name_val} {email}"
 
 		try:
 			output = self.app.context.run_command(command)

@@ -44,7 +44,7 @@ class SSHConnectionManager:
             self.shell.send(command + "\n")
         except Exception as e:
             raise SSHConnectionError(f"Error running command: {e}")
-
+    
     def close(self):
         if self.ssh_client:
             self.shell.close()

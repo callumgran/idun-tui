@@ -1,7 +1,8 @@
 from app.screens.base_screen import BaseScreen
 from textual.containers import Container, Horizontal
 from textual.widgets import Label, Input, Button, Select
-import time
+from app.config import ERROR_COLOR, SUCCESS_COLOR, INFO_COLOR, GPU_TYPES
+
 
 class NodeRequestScreen(BaseScreen):
     """Screen for requesting CPU or GPU nodes."""
@@ -14,14 +15,14 @@ class NodeRequestScreen(BaseScreen):
         )
         self.time_input = Input(placeholder="Hours", id="time")
         self.cpu_cores_input = Input(placeholder="CPU Cores", id="cpu-cores")
-        self.memory_input = Input(placeholder="Memory (e.g., 64G)", id="memory")
+        self.memory_input = Input(
+            placeholder="Memory (e.g., 64G)", id="memory"
+        )
         self.node_count_input = Input(placeholder="Nodes", id="nodes")
 
+        # GPU fields
         self.gpu_count_input = Input(placeholder="GPUs", id="gpu-count")
-        self.gpu_type_input = Select(
-            [("Any", "any"), ("P100", "p100"), ("V100", "v100"), ("A100", "a100"), ("H100", "h100")],
-            id="gpu-type"
-        )
+        self.gpu_type_input = Select(GPU_TYPES, id="gpu-type")
 
         self.gpu_count_label = Label("GPU Count:")
         self.gpu_type_label = Label("GPU Type:")
@@ -71,7 +72,7 @@ class NodeRequestScreen(BaseScreen):
 
     def request_node(self):
         """Send the node request command to the HPC and update the UI."""
-        self.update_status("Requesting node...", color="blue")
+        self.update_status("Requesting node...", color=INFO_COLOR)
         self.refresh()
 
         node_type = self.request_type.value
@@ -85,16 +86,17 @@ class NodeRequestScreen(BaseScreen):
 
         if not time_val or not nodes or not memory or not cpu_cores or \
            (node_type == "gpu" and (not gpu_count or not gpu_type)):
-            self.update_status("Please fill out all fields.", color="#ee2524")
+            self.update_status(
+                "Please fill out all fields.", color=ERROR_COLOR)
             return
-        
+
         try:
             time_int = int(time_val)
             days = time_int // 24
             hours = time_int % 24
             request_time = f"{days}-{hours}:00:00"
         except ValueError:
-            self.update_status("Invalid time value.", color="#ee2524")
+            self.update_status("Invalid time value.", color=ERROR_COLOR)
             return
 
         if node_type == "cpu":
@@ -105,8 +107,9 @@ class NodeRequestScreen(BaseScreen):
         try:
             self.app.context.run_async_command(command)
         except Exception as e:
-            self.update_status(f"Error requesting node: {e}", color="#ee2524")
+            self.update_status(
+                f"Error requesting node: {e}", color=ERROR_COLOR)
             return
 
-        self.update_status("Requested a node!", color="#22af4b")
+        self.update_status("Requested a node!", color=SUCCESS_COLOR)
         self.refresh()

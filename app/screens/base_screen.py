@@ -1,5 +1,6 @@
 from textual.screen import Screen
 from textual.widgets import Header, Footer, Label
+from app.config import SUCCESS_COLOR
 
 class BaseScreen(Screen):
     """Base screen with bindings."""
@@ -13,6 +14,6 @@ class BaseScreen(Screen):
         yield self.status_label
         yield Footer()
 
-    def update_status(self, message: str, color: str = "#22af4b"):
+    def update_status(self, message: str, color: str = SUCCESS_COLOR):
         """Update the status message."""
         self.status_label.update(f"[bold {color}]{message}[/bold {color}]")

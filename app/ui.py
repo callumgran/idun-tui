@@ -19,7 +19,7 @@ class IDUNTUI(App):
         super().__init__(**kwargs)
         self.context = SSHConnectionManager()
         self.tunnel_manager = TunnelManager(self.context)
-        self.remote_mnt_manager = RemoteMntManager()
+        self.remote_mnt_manager = RemoteMntManager(self.context)
 
     def on_mount(self):
         """Start on login screen."""

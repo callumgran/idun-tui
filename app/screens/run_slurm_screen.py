@@ -39,7 +39,7 @@ class RunSlurmJobScreen(BaseScreen):
 			placeholder="Job name", id="job-name"
 		)
 
-		self.remote_home = self.app.context.mount_remote_home()
+		self.remote_home = self.app.remote_mnt_manager.mount()
 
 		self.remote_directory_tree = FilteredDirectoryTree(
 			self.remote_home, id="remote-directory-tree"
@@ -73,7 +73,6 @@ class RunSlurmJobScreen(BaseScreen):
 		"""Reload config files when the user changes the config type."""
 		if event.select.id == "config-type":
 			self.load_slurm_configs()
-			pass
 	
 	@on(DirectoryTree.FileSelected)
 	def handle_file_selected(self, event: DirectoryTree.FileSelected):
@@ -123,6 +122,6 @@ class RunSlurmJobScreen(BaseScreen):
 
 		try:
 			output = self.app.context.run_command(command)
-			self.update_status(f"Job submitted:\n{script_file}", color=SUCCESS_COLOR)
+			self.update_status(f"Job submitted: {output}", color=SUCCESS_COLOR)
 		except Exception as e:
 			self.update_status(f"Error submitting job: {e}", color=ERROR_COLOR)

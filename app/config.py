@@ -2,6 +2,9 @@ from textual.binding import Binding
 
 SSH_BASE_HOST = "idun-login1.hpc.ntnu.no"
 
+REMOTE_MNT_HOST = "idun-samba1.hpc.ntnu.no"
+REMOTE_MNT_DOMAIN = "WIN-NTNU-NO"
+
 SUCCESS_COLOR = "#22af4b"
 ERROR_COLOR = "#ee2524"
 WARNING_COLOR = "#fee851"

@@ -1,6 +1,7 @@
 from textual.app import App
 from app.tunnel_manager import TunnelManager
 from app.ssh_connection import SSHConnectionManager
+from app.remote_mnt_manager import RemoteMntManager
 from app.screens.history_screen import HistoryScreen
 from app.screens.home_screen import HomeScreen
 from app.screens.login_screen import LoginScreen
@@ -18,6 +19,7 @@ class IDUNTUI(App):
         super().__init__(**kwargs)
         self.context = SSHConnectionManager()
         self.tunnel_manager = TunnelManager(self.context)
+        self.remote_mnt_manager = RemoteMntManager()
 
     def on_mount(self):
         """Start on login screen."""
@@ -63,6 +65,7 @@ class IDUNTUI(App):
         """Quit the app."""
         self.tunnel_manager.close_all_tunnels()
         self.context.close()
+        self.remote_mnt_manager.unmount()
         self.exit()
 
 

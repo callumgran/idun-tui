@@ -56,7 +56,9 @@ class IDUNTUI(App):
 
     def action_logout(self):
         """Logout user and return to login screen."""
+        self.tunnel_manager.close_all_tunnels()
         self.context.close()
+        self.remote_mnt_manager.unmount()
         self.context.password = None
         self.pop_screen()
         self.push_screen(LoginScreen())

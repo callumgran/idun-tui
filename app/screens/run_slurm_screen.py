@@ -1,5 +1,5 @@
 import os
-from textual.containers import Container, Horizontal
+from textual.containers import Container, Horizontal, Vertical
 from textual.widgets import Label, Input, Button, Select, DirectoryTree
 from app.screens.base_screen import BaseScreen
 from textual import on
@@ -51,23 +51,29 @@ class RunSlurmJobScreen(BaseScreen):
 	def compose(self):
 		"""Construct the UI layout."""
 		yield from super().compose(
-			Container(
-				Horizontal(Label("Config Type:"), self.config_type),
-				Horizontal(Label("Config File:"), self.config_file),
-				Horizontal(Label("Time (Hours):"), self.time_input),
-				Horizontal(Label("Memory:"), self.memory_input),
-				Horizontal(Label("Output File:"), self.output_file),
-				Horizontal(Label("Job Name:"), self.job_name),
-				Horizontal(self.remote_directory_tree),
-				Horizontal(self.run_button),
-				id="slurm-run-container"
+			Vertical(
+				Horizontal(
+					Container(
+						Horizontal(Label("Config Type:"), self.config_type),
+						Horizontal(Label("Config File:"), self.config_file),
+						Horizontal(Label("Time (Hours):"), self.time_input),
+						Horizontal(Label("Memory:"), self.memory_input),
+						Horizontal(Label("Output File:"), self.output_file),
+						Horizontal(Label("Job Name:"), self.job_name),
+						id="slurm-run-left",
+					),
+					Container(
+						self.remote_directory_tree,
+						id="slurm-run-right"
+					),
+
+					id="slurm-run-inner-container",
+				),
+				Horizontal(self.run_button, id="slurm-run-button-container"),
+				id="slurm-run-container",
 			),
 		)
-
-	def on_mount(self):
-		"""Load available Slurm configs & remote directory tree on mount."""
-		# self.load_slurm_configs()
-
+		
 	@on(Select.Changed)
 	def handle_config_type_change(self, event: Select.Changed):
 		"""Reload config files when the user changes the config type."""
@@ -77,18 +83,22 @@ class RunSlurmJobScreen(BaseScreen):
 	@on(DirectoryTree.FileSelected)
 	def handle_file_selected(self, event: DirectoryTree.FileSelected):
 		"""Handle file selection event and store the selected path."""
-		self.selected_file_path = event.path 
+		self.selected_file_path = event.path.relative_to(self.remote_home)
 		self.update_status(f"Selected file: {self.selected_file_path}")
 
 	def load_slurm_configs(self):
 		"""Fetch available Slurm configuration files from the remote system."""
 		config_type = self.config_type.value
-		search_path = f"{SLURM_CONFIG_BASE_PATH}/{config_type}" if config_type in ["cpu", "gpu"] else f"{SLURM_CONFIG_BASE_PATH}/cpu"
+		command = f"ls {SLURM_CONFIG_BASE_PATH}/{config_type}/*.slurmconfig"
+		if config_type == "all":
+			command = f"ls {SLURM_CONFIG_BASE_PATH}/cpu/*.slurmconfig {SLURM_CONFIG_BASE_PATH}/gpu/*.slurmconfig"
 
 		try:
-			output = self.app.context.run_command(f"ls {search_path}/*.slurmconfig")
-			config_files = [os.path.basename(f) for f in output.split("\n") if f.strip()]
-			self.config_file.set_options([(f, f) for f in config_files])
+			output = self.app.context.run_command(command)
+			output = output.split("\n")
+			config_files_vals = [os.path.basename(f) for f in output if f.strip()]
+			config_files_types = [f.split("/")[2] for f in output if f.strip()]
+			self.config_file.set_options([(f"{t.upper()}: {f}", f) for (t, f) in zip(config_files_types, config_files_vals)])
 		except Exception as e:
 			self.update_status(f"Error loading configs: {e}", color=ERROR_COLOR)
 
@@ -106,15 +116,12 @@ class RunSlurmJobScreen(BaseScreen):
 		output_file_val = self.output_file.value.strip()
 		job_name_val = self.job_name.value.strip()
 
-		# Get script file from remote directory selection
-		script_file = self.selected_file_path.relative_to(self.remote_home)
+		script_file = self.selected_file_path
 
-		# Validate input fields
 		if not config_file or not time_val or not memory_val or not output_file_val or not job_name_val or not script_file:
 			self.update_status("Please fill out all fields.", color=ERROR_COLOR)
 			return
 
-		# Build the sbatch command
 		remote_script_path = f"{SLURM_CONFIG_BASE_PATH}/{self.config_type.value}/{config_file}"
 		email = os.getenv("IDUN_EMAIL", "")
 

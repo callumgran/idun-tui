@@ -1,11 +1,38 @@
-Container#slurm-run-container {
-    layout: vertical;
+Vertical#slurm-run-container {
+    height: 95vh;
     width: 100vw;
-    align: center middle;
     padding-top: 2;
+    align: center top;
     border: solid white;
     background: #202020;
     overflow-y: scroll;
+}
+
+Horizontal#slurm-run-inner-container {
+    height: 80%;
+    width: 100vw;
+    align: center middle;
+    overflow-y: scroll;
+}
+
+Container#slurm-run-left {
+    layout: vertical;
+    width: 50vw;
+    align: center top;
+    padding-top: 2;
+    overflow-y: scroll;
+}
+
+Container#slurm-run-right {
+    layout: vertical;
+    width: 30vw;
+    height: 100%;
+    overflow: scroll;
+}
+
+Horizontal#slurm-run-button-container {
+    layout: horizontal;
+    align: center top;
 }
 
 Container#slurm-config-container {
@@ -29,9 +56,9 @@ Container#node-request-container {
     overflow-y: scroll;
 }
 
-Container#slurm-run-container Horizontal {
+Container#slurm-run-left Horizontal {
     layout: horizontal;
-    width: 80vw;
+    width: 100%;
     align: center top;
 }
 
@@ -47,10 +74,10 @@ Container#node-request-container Horizontal {
     align: center top;
 }
 
-Container#slurm-run-container Label {
+Container#slurm-run-left Label {
     width: 10vw;
     text-align: right;
-	padding-right: 1;
+    padding-right: 1;
     margin-top: 1;
 }
 
@@ -68,10 +95,19 @@ Container#node-request-container Label {
     margin-top: 1;
 }
 
-Container#slurm-run-container Input, Select {
-    width: 50vw;
+Container#slurm-run-left Input {
+    width: 30vw;
     background: black;
     margin: 0;
+    overflow-y: scroll;
+}
+
+Container#slurm-run-left Select {
+    max-width: 30vw;
+    background: black;
+    margin: 0;
+    padding: 0 0 0 0;
+    color: black;
     overflow-y: scroll;
 }
 
@@ -89,9 +125,9 @@ Container#node-request-container Input, Select {
     overflow-y: scroll;
 }
 
-Container#slurm-run-container DirectoryTree {
+Container#slurm-run-right DirectoryTree {
     height: 100%;
-    width: 70vw;
+    width: 100%;
     background: black;
     margin: 0;
 }

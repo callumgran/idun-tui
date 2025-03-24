@@ -3,6 +3,7 @@ from app.tunnel_manager import TunnelManager
 from app.ssh_connection import SSHConnectionManager
 from app.remote_mnt_manager import RemoteMntManager
 from app.screens.history_screen import HistoryScreen
+from app.screens.vnc_screen import VNCScreen
 from app.screens.home_screen import HomeScreen
 from app.screens.login_screen import LoginScreen
 from app.screens.request_node_screen import NodeRequestScreen
@@ -38,6 +39,11 @@ class IDUNTUI(App):
         """Navigate to the history screen."""
         self.pop_screen()
         self.push_screen(HistoryScreen())
+
+    def action_switch_to_vnc(self):
+        """Navigate to the history screen."""
+        self.pop_screen()
+        self.push_screen(VNCScreen())
 
     def action_switch_to_slurm_config(self):
         """Navigate to the SLURM configuration screen."""

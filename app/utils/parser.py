@@ -73,3 +73,22 @@ def parse_sacct_output(output: str) -> list:
             job_entry = dict(zip(header, output_row))
             jobs.append(job_entry)
     return jobs
+
+def parse_vncserver_output(output: str) -> list:
+    """Parse raw sacct output into structured data."""
+    lines = output.strip().split("\n")[2:]
+    if len(lines) < 2:
+        return []
+    header = re.split(r'\t', lines[0].strip())
+
+    servers = []
+    for line in lines[1:]:
+        if set(line.strip()) <= {'-', ' '}:
+            continue
+
+        row = re.split(r'\t\t', line.strip())
+
+        if len(row) == len(header):
+            vnc_entry = dict(zip(header, row))
+            servers.append(vnc_entry)
+    return servers

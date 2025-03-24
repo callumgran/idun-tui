@@ -3,22 +3,25 @@ import platform
 import subprocess
 from dotenv import load_dotenv
 from app.config import REMOTE_MNT_HOST, REMOTE_MNT_DOMAIN
+from .ssh_connection import SSHConnectionManager
 
 class CIFSMountError(Exception):
     pass
 
 class RemoteMntManager:
-    def __init__(self):
+    def __init__(self, context: SSHConnectionManager):
         load_dotenv()
-        self.username = os.getenv("IDUN_USERNAME")
+        self.context = context
+        self.username = os.getenv("IDUN_USERNAME") 
         self.password = os.getenv("IDUN_PASSWORD")
         self.system = platform.system().lower()
         self.mount_point = f"/tmp/smb_mnt_{self.username}"
         self.remote_path = f"//{REMOTE_MNT_HOST}/{self.username}"
 
     def mount(self):
+        self._check_context()
         if not self.username or not self.password:
-            raise CIFSMountError("Missing SMB credentials.")
+            raise CIFSMountError(f"Missing SMB credentials.")
 
         try:
             if os.path.exists(self.mount_point):
@@ -47,11 +50,19 @@ class RemoteMntManager:
         ]
         subprocess.run(command, check=True)
 
-    # Don't have a mac so I just yolo'd this based on the docs
     def _mount_macos(self):
-        smb_path = f"smb://{REMOTE_MNT_DOMAIN};{self.username}:{self.password}@{REMOTE_MNT_HOST}/{self.username}"
-        command = ["mount_smbfs", smb_path, self.mount_point]
+        """
+        MacOS uses mount.cifs under the hood, as well. However, mount_smbfs is specifically designed for mounting SMB and cifs shares.
+        """
+        # raise KeyError(f"{REMOTE_MNT_HOST}")
+        smb_path = f"//{self.username}@{REMOTE_MNT_HOST}/{self.username}"
+        command = ["mount", "-t", "smbfs", smb_path, self.mount_point]
         subprocess.run(command, check=True)
+    
+    def _check_context(self):
+        if (not self.username or not self.password) and self.context is not None:
+            self.username = self.context.username
+            self.password = self.context.password
 
     def unmount(self):
         try:

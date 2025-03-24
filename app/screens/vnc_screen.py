@@ -50,14 +50,12 @@ class VNCScreen(BaseScreen):
 
         try:
             result = self.app.context.run_command(f"vncserver -list")
-            # raise KeyError(f"{result}")
         except Exception as e:
             self.update_status(str(e), color=ERROR_COLOR)
             self.refresh()
             return
 
         parsed_jobs = parse_vncserver_output(result)
-        # raise KeyError(f"{parsed_jobs}")
         if parsed_jobs and len(parsed_jobs) > 0:
             for job in parsed_jobs:
                 row_style = "white"

@@ -111,5 +111,5 @@ class NodeRequestScreen(BaseScreen):
                 f"Error requesting node: {e}", color=ERROR_COLOR)
             return
 
-        self.update_status("Requested a node!", color=SUCCESS_COLOR)
+        self.update_status("Requested a node with!", color=SUCCESS_COLOR)
         self.refresh()

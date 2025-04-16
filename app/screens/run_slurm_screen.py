@@ -116,6 +116,11 @@ class RunSlurmJobScreen(BaseScreen):
 		output_file_val = self.output_file.value.strip()
 		job_name_val = self.job_name.value.strip()
 
+		time_int = int(time_val)
+		days = time_int // 24
+		hours = time_int % 24
+		job_time = f"{days}-{hours}:00:00"
+
 		script_file = self.selected_file_path
 
 		if not config_file or not time_val or not memory_val or not output_file_val or not job_name_val or not script_file:
@@ -125,7 +130,7 @@ class RunSlurmJobScreen(BaseScreen):
 		remote_script_path = f"{SLURM_CONFIG_BASE_PATH}/{self.config_type.value}/{config_file}"
 		email = os.getenv("IDUN_EMAIL", "")
 
-		command = f"mkdir -p {SLURM_OUTPUT_BASE_PATH} && ./{remote_script_path} {script_file} {SLURM_OUTPUT_BASE_PATH}/{output_file_val} {time_val} {memory_val} {job_name_val} {email}"
+		command = f"mkdir -p {SLURM_OUTPUT_BASE_PATH} && ./{remote_script_path} {script_file} {SLURM_OUTPUT_BASE_PATH}/{output_file_val} {job_time} {memory_val} {job_name_val} {email}"
 
 		try:
 			output = self.app.context.run_command(command)
